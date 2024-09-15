@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "batsy_hardcore:block/revive_altar_bottom",
+    "side": "batsy_hardcore:block/revive_altar_side",
+    "top": "batsy_hardcore:block/revive_altar_top"
+  }
+}

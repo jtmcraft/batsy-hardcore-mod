@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "loaded=true": {
+      "model": "batsy_hardcore:block/revive_altar_loaded"
+    },
+    "loaded=false": {
+      "model": "batsy_hardcore:block/revive_altar"
+    }
+  }
+}

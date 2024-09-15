@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "batsy_hardcore_mode_activated": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/stone.png",
+    "description": {
+      "translate": "Batsy Hardcore activated"
+    },
+    "frame": "task",
+    "hidden": true,
+    "icon": {
+      "item": "batsy_hardcore:simple_revive_totem"
+    },
+    "show_toast": false,
+    "title": {
+      "text": "Batsy Hardcore Activated"
+    }
+  },
+  "requirements": [
+    [
+      "batsy_hardcore_mode_activated"
+    ]
+  ],
+  "sends_telemetry_event": false
+}
+

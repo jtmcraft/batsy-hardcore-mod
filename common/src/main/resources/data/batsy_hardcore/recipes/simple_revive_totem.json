@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "minecraft:diamond"
+    },
+    "R": {
+      "item": "minecraft:totem_of_undying"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#R#",
+    " # "
+  ],
+  "result": {
+    "item": "batsy_hardcore:simple_revive_totem"
+  },
+  "show_notification": true
+}

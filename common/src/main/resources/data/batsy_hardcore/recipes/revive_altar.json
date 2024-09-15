@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "minecraft:diamond"
+    },
+    "R": {
+      "item": "minecraft:respawn_anchor"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#R#",
+    " # "
+  ],
+  "result": {
+    "item": "batsy_hardcore:revive_altar"
+  },
+  "show_notification": true
+}
