@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "batsy_hardcore:item/simple_revive_totem"
+    "layer0": "batsy_hardcore:item/revive_totem_basic"
   }
 }

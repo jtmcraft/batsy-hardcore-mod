@@ -18,7 +18,7 @@ public class BatsyHardcoreModBeforePlayerBlockBreakHandler implements PlayerBloc
         }
 
         if (player instanceof ServerPlayerEntity serverPlayerEntity && blockEntity instanceof ReviveAltarBlockEntityFabric reviveAltarBlockEntityFabric) {
-            return BatsyHardcoreBeforePlayerBlockBreakUtil.beforeBlockBreak(serverPlayerEntity, reviveAltarBlockEntityFabric.getOwnerUuid());
+            return BatsyHardcoreBeforePlayerBlockBreakUtil.beforeReviveAltarBreak(serverPlayerEntity, reviveAltarBlockEntityFabric.getOwnerUuid());
         }
 
         return true;

@@ -8,14 +8,16 @@ import org.jetbrains.annotations.NotNull;
 public final class BatsyHardcoreBeforePlayerBlockBreakUtil {
     private BatsyHardcoreBeforePlayerBlockBreakUtil() {}
 
-    public static boolean beforeBlockBreak(@NotNull ServerPlayerEntity serverPlayerEntity, String altarOwnerUuid) {
+    public static boolean beforeReviveAltarBreak(@NotNull ServerPlayerEntity serverPlayerEntity, String altarOwnerUuid) {
         String playerUuid = serverPlayerEntity.getUuidAsString();
-        return serverPlayerEntity.isCreativeLevelTwoOp() ||
-               playerUuid.equals(altarOwnerUuid) ||
-               handleCannotBreakReviveAltar(serverPlayerEntity, playerUuid, altarOwnerUuid);
+        return playerUuid.equals(altarOwnerUuid) ||
+                handleNonOwnerBreakingReviveAltar(serverPlayerEntity, playerUuid, altarOwnerUuid);
     }
 
-    private static boolean handleCannotBreakReviveAltar(ServerPlayerEntity serverPlayerEntity, String playerUuid, String altarOwnerUuid) {
+    private static boolean handleNonOwnerBreakingReviveAltar(@NotNull ServerPlayerEntity serverPlayerEntity, String playerUuid, String altarOwnerUuid) {
+        if (serverPlayerEntity.isCreativeLevelTwoOp()) {
+            serverPlayerEntity.sendMessage(Text.literal("Not yet implemented."));
+        }
         log(playerUuid, altarOwnerUuid);
         sendMessage(serverPlayerEntity);
         return false;

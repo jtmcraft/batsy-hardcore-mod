@@ -14,12 +14,19 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
@@ -59,30 +66,17 @@ public class ReviveAltarBlockFabric extends BlockWithEntity implements BlockEnti
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return checkType(type, BatsyHardcoreModBlockEntitiesFabric.REVIVE_ALTAR_BE, (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1));
+        return checkType(type, BatsyHardcoreModBlockEntitiesFabric.REVIVE_ALTAR_BE,
+                (tickingWorld, tickingBlockPos, tickingBlockState, tickingBlockEntity) ->
+                        tickingBlockEntity.tick(tickingWorld, tickingBlockState, tickingBlockEntity));
     }
 
-//    @Override
-//    public ActionResult onUse(BlockState blockState, @NotNull World world, BlockPos blockPos, PlayerEntity playerEntity, Hand hand, BlockHitResult blockHitResult) {
-//        if(!world.isClient && hand == Hand.MAIN_HAND) {
-//            world.setBlockState(blockPos, blockState.cycle(LOADED));
-//        }
-//
-//        return ActionResult.SUCCESS;
-//    }
-
-    public static boolean canSetSpawn(@NotNull World level) {
-        boolean bedWorks = level.getDimension().bedWorks();
-
-        if (BatsyHardcoreConfiguration.batsyHardcoreUseRespawnAnchor) {
-            return bedWorks || level.getDimension().respawnAnchorWorks();
-        }
-
-        return bedWorks;
+    public static boolean canPlaceReviveAnchor(@NotNull World level) {
+        return level.getDimension().bedWorks() || level.getDimension().respawnAnchorWorks();
     }
 
     @Override
-    public void onPlaced(World world, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity placer, ItemStack itemStack) {
+    public void onPlaced(@NotNull World world, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity placer, ItemStack itemStack) {
         if (world.isClient || placer == null) {
             return;
         }
@@ -95,7 +89,7 @@ public class ReviveAltarBlockFabric extends BlockWithEntity implements BlockEnti
             return;
         }
 
-        if (!ReviveAltarBlockFabric.canSetSpawn(world)) {
+        if (!ReviveAltarBlockFabric.canPlaceReviveAnchor(world)) {
             serverPlayerEntity.sendMessage(Text.literal("You cannot set your spawn in this world."));
             return;
         }
@@ -107,6 +101,35 @@ public class ReviveAltarBlockFabric extends BlockWithEntity implements BlockEnti
 
         startBatsyHardcoreModeForPlayer(serverPlayerEntity, reviveAltarBlockEntityFabric);
         serverPlayerEntity.sendMessage(Text.literal("You entered Batsy Hardcore mode and set your spawn here."));
+    }
+
+    @Override
+    public ActionResult onUse(BlockState blockState, @NotNull World world, BlockPos blockPos, PlayerEntity playerEntity, Hand hand, BlockHitResult blockHitResult) {
+        if (!world.isClient) {
+            if (world.getBlockEntity(blockPos) instanceof ReviveAltarBlockEntityFabric reviveAltarBlockEntityFabric) {
+                playerEntity.openHandledScreen(reviveAltarBlockEntityFabric);
+            }
+        }
+
+        return ActionResult.SUCCESS;
+    }
+
+    public static int getLightLevel(@NotNull BlockState blockState) {
+        return blockState.get(LOADED) ?
+                BatsyHardcoreConfiguration.reviveAltarLoadedLightLevel :
+                BatsyHardcoreConfiguration.reviveAltarUnloadedLightLevel;
+    }
+
+    @Override
+    public boolean hasComparatorOutput(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getComparatorOutput(@NotNull BlockState state, @NotNull World world, BlockPos pos) {
+        return state.get(LOADED) ?
+                BatsyHardcoreConfiguration.reviveAltarLoadedComparator :
+                BatsyHardcoreConfiguration.reviveAltarUnloadedComparator;
     }
 
     private void startBatsyHardcoreModeForPlayer(@NotNull ServerPlayerEntity player, @NotNull ReviveAltarBlockEntityFabric blockEntity) {

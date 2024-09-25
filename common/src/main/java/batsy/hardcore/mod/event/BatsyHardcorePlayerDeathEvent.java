@@ -2,6 +2,7 @@ package batsy.hardcore.mod.event;
 
 import batsy.hardcore.mod.util.BatsyHardcorePlayerTagsUtil;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.world.GameMode;
 
 public class BatsyHardcorePlayerDeathEvent implements BatsyHardcoreEvent {
     private final ServerPlayerEntity serverPlayerEntity;
@@ -13,5 +14,6 @@ public class BatsyHardcorePlayerDeathEvent implements BatsyHardcoreEvent {
     @Override
     public void callEvent() {
         BatsyHardcorePlayerTagsUtil.removeAlive(serverPlayerEntity);
+        serverPlayerEntity.changeGameMode(GameMode.SPECTATOR);
     }
 }

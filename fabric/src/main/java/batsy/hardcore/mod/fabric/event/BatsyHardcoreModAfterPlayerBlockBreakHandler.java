@@ -21,7 +21,7 @@ public class BatsyHardcoreModAfterPlayerBlockBreakHandler implements PlayerBlock
                     // TODO handle this case
                     return;
                 }
-                BatsyHardcoreAfterPlayerBlockBreakUtil.afterBlockBreak(serverPlayerEntity, BatsyHardcoreModFabric.getDataDirectory());
+                BatsyHardcoreAfterPlayerBlockBreakUtil.afterBlockBreak(serverPlayerEntity);
             }
         }
     }

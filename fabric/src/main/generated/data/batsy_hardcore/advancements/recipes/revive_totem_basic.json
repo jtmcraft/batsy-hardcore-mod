@@ -1,0 +1,59 @@
+{
+  "parent": "batsy_hardcore:recipes/root",
+  "criteria": {
+    "has_diamond": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:diamond"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_undying": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:totem_of_undying"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "batsy_hardcore:textures/block/revive_altar_side.png",
+    "description": {
+      "text": "Basic Revive Totem Recipe"
+    },
+    "frame": "task",
+    "hidden": true,
+    "icon": {
+      "item": "batsy_hardcore:revive_altar"
+    },
+    "show_toast": false,
+    "title": {
+      "text": "Basic Revive Totem"
+    }
+  },
+  "requirements": [
+    [
+      "has_undying",
+      "has_diamond"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "batsy_hardcore:revive_totem_basic",
+      "batsy_hardcore:revive_totem_advanced",
+      "batsy_hardcore:revive_altar"
+    ]
+  },
+  "sends_telemetry_event": false
+}

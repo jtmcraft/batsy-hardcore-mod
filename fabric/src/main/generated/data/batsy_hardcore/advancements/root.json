@@ -1,0 +1,38 @@
+{
+  "criteria": {
+    "location": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {}
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "batsy_hardcore:textures/block/revive_altar_side.png",
+    "description": {
+      "text": "Batsy Hardcore Mode"
+    },
+    "frame": "task",
+    "hidden": true,
+    "icon": {
+      "item": "batsy_hardcore:revive_altar"
+    },
+    "show_toast": false,
+    "title": {
+      "text": "Batsy Hardcore"
+    }
+  },
+  "requirements": [
+    [
+      "location"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

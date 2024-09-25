@@ -7,6 +7,7 @@ public class BatsyHardcoreModEventHandlingFabric {
     public static void registerEvents() {
         PlayerBlockBreakEvents.AFTER.register(new BatsyHardcoreModAfterPlayerBlockBreakHandler());
         PlayerBlockBreakEvents.BEFORE.register(new BatsyHardcoreModBeforePlayerBlockBreakHandler());
+        ServerPlayerEvents.AFTER_RESPAWN.register(new BatsyHardcoreModPlayerRespawnCallback());
         ServerPlayerEvents.COPY_FROM.register(new BatsyHardcoreModPlayerCloneCallback());
     }
 }

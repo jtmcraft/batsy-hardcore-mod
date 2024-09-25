@@ -1,3 +1,14 @@
 {
-
+  "revive_advanced_complete": {
+    "subtitle": "sounds.batsy_hardcore.revive_advanced_complete",
+    "sounds": [
+      "batsy_hardcore:revive_advanced_complete"
+    ]
+  },
+  "revive_basic_complete": {
+    "subtitle": "sounds.batsy_hardcore.revive_basic_complete",
+    "sounds": [
+      "batsy_hardcore:revive_basic_complete"
+    ]
+  }
 }

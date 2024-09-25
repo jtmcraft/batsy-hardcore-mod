@@ -1,0 +1,29 @@
+{
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "batsy_hardcore:textures/block/revive_altar_side.png",
+    "description": {
+      "text": "The Batsy Hardcore Recipes Advancement"
+    },
+    "frame": "task",
+    "hidden": true,
+    "icon": {
+      "item": "batsy_hardcore:revive_altar"
+    },
+    "show_toast": false,
+    "title": {
+      "text": "Batsy Hardcore Recipe Advancements"
+    }
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ],
+  "sends_telemetry_event": false
+}
