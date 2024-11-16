@@ -6,6 +6,8 @@ import batsy.hardcore.mod.fabric.item.BatsyHardcoreModItemsFabric;
 import batsy.hardcore.mod.fabric.particle.BatsyHardcoreParticlesFabric;
 import batsy.hardcore.mod.fabric.screen.ReviveAltarScreenHandler;
 import batsy.hardcore.mod.fabric.sound.BatsyHardcoreSoundsFabric;
+import batsy.hardcore.mod.kubejs.BatsyHardcoreEventsKubeJS;
+import batsy.hardcore.mod.kubejs.api.PlayerRevivingEventJS;
 import batsy.hardcore.mod.sound.BatsyHardcoreSoundPlayer;
 import batsy.hardcore.mod.stat.BatsyHardcoreModPlayerStats;
 import batsy.hardcore.mod.util.BatsyHardcoreMathUtil;
@@ -42,7 +44,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -56,8 +57,7 @@ public class ReviveAltarBlockEntityFabric extends BlockEntity implements Extende
     private int tmpLoaded;
 
     private final Map<Item, Integer> itemLoadedValuesMap = Map.of(
-            BatsyHardcoreModItemsFabric.REVIVE_TOTEM_BASIC, ReviveAltarBlockEntityConstants.Properties.LOADED_BASIC_VALUE,
-            BatsyHardcoreModItemsFabric.REVIVE_TOTEM_ADVANCED, ReviveAltarBlockEntityConstants.Properties.LOADED_ADVANCED_VALUE
+            BatsyHardcoreModItemsFabric.REVIVE_TOTEM, ReviveAltarBlockEntityConstants.Properties.LOADED_VALUE
     );
 
     public ReviveAltarBlockEntityFabric(BlockPos blockPos, BlockState blockState) {
@@ -123,7 +123,7 @@ public class ReviveAltarBlockEntityFabric extends BlockEntity implements Extende
         }
     }
 
-    private void updateLightLevel(@NotNull World world, @NotNull BlockPos pos, @NotNull BlockState blockState) {
+    private void loadAltarIfUnloaded(@NotNull World world, @NotNull BlockPos pos, @NotNull BlockState blockState) {
         if (!blockState.get(ReviveAltarBlockFabric.LOADED)) {
             world.setBlockState(pos, blockState.cycle(ReviveAltarBlockFabric.LOADED), 2);
             markDirty(world, pos, blockState);
@@ -142,9 +142,11 @@ public class ReviveAltarBlockEntityFabric extends BlockEntity implements Extende
 
         if (hasLoaded()) {
             ServerPlayerEntity serverPlayerEntity = ownerInUniverse();
+
             if (serverPlayerEntity != null) {
                 handleLoadedComplete(serverPlayerEntity, world, blockState, blockEntity);
             }
+
             resetLoadingProgress();
         }
     }
@@ -182,8 +184,7 @@ public class ReviveAltarBlockEntityFabric extends BlockEntity implements Extende
     }
 
     private boolean isItemReviveTotem() {
-        return (getStack(ReviveAltarBlockEntityConstants.TOTEM_SLOT).getItem() == BatsyHardcoreModItemsFabric.REVIVE_TOTEM_BASIC
-                || getStack(ReviveAltarBlockEntityConstants.TOTEM_SLOT).getItem() == BatsyHardcoreModItemsFabric.REVIVE_TOTEM_ADVANCED)
+        return (getStack(ReviveAltarBlockEntityConstants.TOTEM_SLOT).getItem() == BatsyHardcoreModItemsFabric.REVIVE_TOTEM)
                 && getStack(ReviveAltarBlockEntityConstants.TOTEM_SLOT).getCount() == 1;
     }
 
@@ -214,37 +215,30 @@ public class ReviveAltarBlockEntityFabric extends BlockEntity implements Extende
         }
 
         BlockPos pos = blockEntity.getPos();
-        updateLightLevel(world, pos, blockState);
-        playAltarLoadedSound(world, pos);
+        loadAltarIfUnloaded(world, pos, blockState);
         removeStack(ReviveAltarBlockEntityConstants.TOTEM_SLOT);
         loaded = tmpLoaded;
         setOwnerSpawn(serverPlayerEntity, world, pos);
+        updatePlayerBatsyHardcoreTags(serverPlayerEntity);
+    }
 
-        if (loaded == ReviveAltarBlockEntityConstants.Properties.LOADED_ADVANCED_VALUE) {
+    private void updatePlayerBatsyHardcoreTags(@NotNull ServerPlayerEntity serverPlayerEntity) {
+        BatsyHardcorePlayerTagsUtil.setAltarLoaded(serverPlayerEntity);
+        if (loaded == ReviveAltarBlockEntityConstants.Properties.LOADED_VALUE) {
             BatsyHardcorePlayerTagsUtil.setKeepInventory(serverPlayerEntity);
         } else {
             BatsyHardcorePlayerTagsUtil.removeKeepInventory(serverPlayerEntity);
         }
     }
 
-    private void playAltarLoadedSound(@NotNull World world, BlockPos pos) {
-        SoundEvent soundEvent = (tmpLoaded == ReviveAltarBlockEntityConstants.Properties.LOADED_ADVANCED_VALUE)
-                ? BatsyHardcoreSoundsFabric.ADVANCED_REVIVAL_LOAD_COMPLETE_SE
-                : BatsyHardcoreSoundsFabric.BASIC_REVIVAL_LOAD_COMPLETE_SE;
-        BatsyHardcoreSoundPlayer.playBlockSound(world, pos, soundEvent);
-    }
-
     private void playAltarRespawnSound(@NotNull World world, BlockPos blockPos) {
-        SoundEvent soundEvent = (loaded == ReviveAltarBlockEntityConstants.Properties.LOADED_ADVANCED_VALUE)
-                ? BatsyHardcoreSoundsFabric.ADVANCED_REVIVAL_LOAD_COMPLETE_SE
-                : BatsyHardcoreSoundsFabric.BASIC_REVIVAL_LOAD_COMPLETE_SE;
+        SoundEvent soundEvent = BatsyHardcoreSoundsFabric.REVIVE_PLAYER_SE;
         BatsyHardcoreSoundPlayer.playBlockSound(world, blockPos, soundEvent);
     }
 
     private void playAltarRespawnParticles(@NotNull ServerWorld world, BlockPos blockPos) {
-        DefaultParticleType particle = (loaded == ReviveAltarBlockEntityConstants.Properties.LOADED_ADVANCED_VALUE)
-                ? BatsyHardcoreParticlesFabric.ADVANCED_REVIVE_PARTICLE
-                : BatsyHardcoreParticlesFabric.BASIC_REVIVE_PARTICLE;
+        DefaultParticleType particle = BatsyHardcoreParticlesFabric.REVIVE_PARTICLE;
+
         for (int i = 0; i < 20; i++) {
             double xCoordinate = calculateCoordinate(blockPos.getX(), i);
             double yCoordinate = blockPos.getY() + 1;
@@ -262,16 +256,6 @@ public class ReviveAltarBlockEntityFabric extends BlockEntity implements Extende
         BlockPos adjustedSpawnPos = new BlockPos(spawnPos.getX(), spawnPos.getY() + 1, spawnPos.getZ());
         setSpawnForPlayer(serverPlayerEntity, world, adjustedSpawnPos);
         serverPlayerEntity.sendMessage(Text.literal("Your revive altar has been loaded. You will respawn here when you die."));
-    }
-
-    private List<ServerPlayerEntity> getServerPlayerEntities(@NotNull World world) {
-        MinecraftServer server = world.getServer();
-
-        if (server != null) {
-            return server.getPlayerManager().getPlayerList();
-        }
-
-        return new ArrayList<>();
     }
 
     private void resetLoadingProgress() {
@@ -318,24 +302,30 @@ public class ReviveAltarBlockEntityFabric extends BlockEntity implements Extende
 
     private void reviveOwner(@NotNull ServerPlayerEntity serverPlayerEntity, World world, BlockPos blockPos, BlockState blockState) {
         if (serverPlayerEntity.isSpectator()) {
-            playAltarRespawnSound(world, blockPos);
-            playAltarRespawnParticles((ServerWorld) world, blockPos);
-            BlockState cycledBlockState = blockState.cycle(ReviveAltarBlockFabric.LOADED);
-            world.setBlockState(blockPos, cycledBlockState);
-            serverPlayerEntity.resetStat(BatsyHardcoreModPlayerStats.BATSY_HARDCORE_TIME_STAT);
+            PlayerRevivingEventJS playerRevivedEvent = new PlayerRevivingEventJS(serverPlayerEntity);
+            BatsyHardcoreEventsKubeJS.PLAYER_REVIVING.post(playerRevivedEvent);
 
-            if (loaded == ReviveAltarBlockEntityConstants.Properties.LOADED_BASIC_VALUE) {
-                serverPlayerEntity.getInventory().clear();
-                serverPlayerEntity.sendMessage(Text.literal("You have lost all of your stuff, but at least you're alive."));
+            if (BatsyHardcoreConfiguration.PLAY_REVIVE_SOUND) {
+                playAltarRespawnSound(world, blockPos);
             }
 
-            serverPlayerEntity.changeGameMode(GameMode.SURVIVAL);
+            if (BatsyHardcoreConfiguration.SHOW_REVIVE_PARTICLES) {
+                playAltarRespawnParticles((ServerWorld) world, blockPos);
+            }
+
+            BlockState cycledBlockState = blockState.cycle(ReviveAltarBlockFabric.LOADED);
+            world.setBlockState(blockPos, cycledBlockState);
+
+            serverPlayerEntity.resetStat(BatsyHardcoreModPlayerStats.BATSY_HARDCORE_TIME_STAT);
             BatsyHardcorePlayerTagsUtil.addAll(serverPlayerEntity);
+            serverPlayerEntity.changeGameMode(GameMode.SURVIVAL);
+
             loaded = ReviveAltarBlockEntityConstants.Properties.UNLOADED_VALUE;
             tmpLoaded = loaded;
-            serverPlayerEntity.sendMessage(Text.literal("Welcome back to the realm of the living. Your revive altar has spent all of its magic bringing you back; consider reloading it as soon as possible. Also, you no longer have a spawn point set."));
-            setSpawnForPlayer(serverPlayerEntity, world, null);
+
+            serverPlayerEntity.sendMessage(Text.literal("Welcome back to the realm of the living. Your revive altar has spent all of its magic bringing you back; consider reloading it as soon as possible."));
             BatsyHardcorePlayerTagsUtil.removeKeepInventory(serverPlayerEntity);
+
             markDirty(world, blockPos, blockState);
         }
     }
@@ -371,6 +361,10 @@ public class ReviveAltarBlockEntityFabric extends BlockEntity implements Extende
 
     @Override
     public boolean canPlayerUse(@NotNull PlayerEntity player) {
+        if (player.isSpectator()) {
+            return false;
+        }
+
         MinecraftServer server = player.getServer();
 
         if (server == null) {
@@ -378,18 +372,7 @@ public class ReviveAltarBlockEntityFabric extends BlockEntity implements Extende
             return false;
         }
 
-        return isAltarOwnerOnline(player, server);
-    }
-
-    private boolean isAltarOwnerOnline(PlayerEntity player, @NotNull MinecraftServer server) {
-        boolean can = server.getPlayerManager().getPlayerList().stream()
-                .anyMatch(serverPlayerEntity -> serverPlayerEntity.getUuidAsString().equals(ownerUuid));
-
-        if (!can) {
-            player.sendMessage(Text.literal("The owner of this altar must be somewhere in the timespace continuum."));
-        }
-
-        return can;
+        return true;
     }
 
     @Override

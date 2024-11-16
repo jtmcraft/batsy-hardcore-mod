@@ -12,13 +12,12 @@ public class ReviveAltarBlockEntityConstants {
         public static final int MAX_LOADING_PROGRESS_INDEX = 1;
         public static final int LOADED_INDEX = 2;
         public static final int UNLOADED_VALUE = 0;
-        public static final int LOADED_BASIC_VALUE = 1;
-        public static final int LOADED_ADVANCED_VALUE = 2;
+        public static final int LOADED_VALUE = 1;
     }
 
     public static class Particles {
-        public static final double XZ_OFFSET = 0.25d;
-        public static final double Y_OFFSET = 0.15d;
-        public static final float SPEED = 5f;
+        public static double XZ_OFFSET = 0.25d;
+        public static double Y_OFFSET = 0.15d;
+        public static float SPEED = 5f;
     }
 }

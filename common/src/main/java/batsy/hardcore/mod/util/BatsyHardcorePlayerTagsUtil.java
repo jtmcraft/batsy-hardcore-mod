@@ -7,6 +7,14 @@ import org.jetbrains.annotations.NotNull;
 public final class BatsyHardcorePlayerTagsUtil {
     private BatsyHardcorePlayerTagsUtil() {}
 
+    public static void setAltarLoaded(@NotNull ServerPlayerEntity serverPlayerEntity) {
+        serverPlayerEntity.addCommandTag(BatsyHardcoreConfiguration.batsyHardcoreModeAltarLoaded);
+    }
+
+    public static void removeAltarLoaded(@NotNull ServerPlayerEntity serverPlayerEntity) {
+        serverPlayerEntity.removeScoreboardTag(BatsyHardcoreConfiguration.batsyHardcoreModeAltarLoaded);
+    }
+
     public static void setKeepInventory(@NotNull ServerPlayerEntity serverPlayerEntity) {
         serverPlayerEntity.addCommandTag(BatsyHardcoreConfiguration.batsyHardcoreModeKeepInventoryTag);
     }
@@ -39,6 +47,7 @@ public final class BatsyHardcorePlayerTagsUtil {
     public static void removeAll(@NotNull ServerPlayerEntity serverPlayerEntity) {
         remove(serverPlayerEntity);
         removeAlive(serverPlayerEntity);
+        removeAltarLoaded(serverPlayerEntity);
         removeKeepInventory(serverPlayerEntity);
     }
 
@@ -52,6 +61,10 @@ public final class BatsyHardcorePlayerTagsUtil {
     }
 
     public static boolean isAltarLoaded(@NotNull ServerPlayerEntity serverPlayerEntity) {
+        return serverPlayerEntity.getCommandTags().contains(BatsyHardcoreConfiguration.batsyHardcoreModeAltarLoaded);
+    }
+
+    public static boolean isKeepInventory(@NotNull ServerPlayerEntity serverPlayerEntity) {
         return serverPlayerEntity.getCommandTags().contains(BatsyHardcoreConfiguration.batsyHardcoreModeKeepInventoryTag);
     }
 }

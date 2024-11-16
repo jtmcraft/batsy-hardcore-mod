@@ -1,0 +1,1 @@
+batsy.hardcore.mod.kubejs.BatsyHardcoreKubeJSPlugin

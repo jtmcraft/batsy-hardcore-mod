@@ -2,8 +2,8 @@ package batsy.hardcore.mod.fabric.item;
 
 import net.minecraft.item.Item;
 
-public class ReviveTotemBasic extends Item {
-    public ReviveTotemBasic(Settings settings) {
+public class ReviveTotem extends Item {
+    public ReviveTotem(Settings settings) {
         super(settings);
     }
 }

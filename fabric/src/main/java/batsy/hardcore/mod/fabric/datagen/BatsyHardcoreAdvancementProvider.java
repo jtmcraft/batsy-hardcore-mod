@@ -4,7 +4,7 @@ import batsy.hardcore.mod.BatsyHardcoreConfiguration;
 import batsy.hardcore.mod.BatsyHardcoreMod;
 import batsy.hardcore.mod.fabric.block.BatsyHardcoreModBlocksFabric;
 import batsy.hardcore.mod.fabric.item.BatsyHardcoreModItemsFabric;
-import batsy.hardcore.mod.util.BatsyHardcoreUtil;
+import batsy.hardcore.mod.util.BatsyHardcoreIdentifierProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancement.Advancement;
@@ -38,8 +38,7 @@ public class BatsyHardcoreAdvancementProvider extends FabricAdvancementProvider 
         createMainRootAdventure(consumer);
         Advancement recipesRoot = createRecipesRootAdvancement(consumer);
         createReviveAltarAdvancement(consumer, recipesRoot);
-        Advancement basicTotemInventoryChangeAdvancement = createBasicTotemAdvancement(consumer, recipesRoot);
-        createAdvancedTotemAdvancement(consumer, basicTotemInventoryChangeAdvancement);
+        createReviveTotemAdvancement(consumer, recipesRoot);
     }
 
     private Advancement createAdvancement(String displayName, String description, String id, Advancement parent, Consumer<Advancement> consumer, @NotNull Map<String, CriterionConditions> criteria, boolean hasRewards) {
@@ -47,7 +46,7 @@ public class BatsyHardcoreAdvancementProvider extends FabricAdvancementProvider 
                 .display(new AdvancementDisplay(new ItemStack(BatsyHardcoreModBlocksFabric.REVIVE_ALTAR_BLOCK),
                         Text.literal(displayName),
                         Text.literal(description),
-                        BatsyHardcoreUtil.id("textures/block/revive_altar_side.png"),
+                        BatsyHardcoreIdentifierProvider.create("textures/block/revive_altar_side.png"),
                         AdvancementFrame.TASK,
                         false,
                         false,
@@ -65,9 +64,8 @@ public class BatsyHardcoreAdvancementProvider extends FabricAdvancementProvider 
         if (hasRewards) {
             AdvancementRewards.Builder awardsBuilder = new AdvancementRewards.Builder();
             List.of(
-                    BatsyHardcoreUtil.id(BatsyHardcoreConfiguration.REVIVE_TOKEN_BASIC),
-                    BatsyHardcoreUtil.id(BatsyHardcoreConfiguration.REVIVE_TOKEN_ADVANCED),
-                    BatsyHardcoreUtil.id(BatsyHardcoreConfiguration.REVIVE_ALTAR)
+                    BatsyHardcoreIdentifierProvider.create(BatsyHardcoreConfiguration.REVIVE_TOTEM),
+                    BatsyHardcoreIdentifierProvider.create(BatsyHardcoreConfiguration.REVIVE_ALTAR)
             ).forEach(awardsBuilder::addRecipe);
             advancementBuilder.rewards(awardsBuilder.build());
         }
@@ -95,19 +93,11 @@ public class BatsyHardcoreAdvancementProvider extends FabricAdvancementProvider 
         createAdvancement("Batsy Hardcore", "Batsy Hardcore Mode", "root", null, consumer, createLocationCondition(), false);
     }
 
-    private void createAdvancedTotemAdvancement(Consumer<Advancement> consumer, Advancement parent) {
+    private void createReviveTotemAdvancement(Consumer<Advancement> consumer, Advancement parent) {
         Map<String, CriterionConditions> criterionConditionsMap = new HashMap<>(2);
         criterionConditionsMap.put("has_diamond", InventoryChangedCriterion.Conditions.items(Items.DIAMOND));
         criterionConditionsMap.put("has_undying", InventoryChangedCriterion.Conditions.items(Items.TOTEM_OF_UNDYING));
-        criterionConditionsMap.put("has_basic_totem", InventoryChangedCriterion.Conditions.items(BatsyHardcoreModItemsFabric.REVIVE_TOTEM_BASIC));
-        createAdvancement("Advanced Revive Totem", "Advanced Revive Totem Recipe", "recipes/" + BatsyHardcoreConfiguration.REVIVE_TOKEN_ADVANCED, parent, consumer, criterionConditionsMap, true);
-    }
-
-    private Advancement createBasicTotemAdvancement(Consumer<Advancement> consumer, Advancement parent) {
-        Map<String, CriterionConditions> criterionConditionsMap = new HashMap<>(2);
-        criterionConditionsMap.put("has_diamond", InventoryChangedCriterion.Conditions.items(Items.DIAMOND));
-        criterionConditionsMap.put("has_undying", InventoryChangedCriterion.Conditions.items(Items.TOTEM_OF_UNDYING));
-        return createAdvancement("Basic Revive Totem", "Basic Revive Totem Recipe", "recipes/" + BatsyHardcoreConfiguration.REVIVE_TOKEN_BASIC, parent, consumer, criterionConditionsMap, true);
+        createAdvancement("Revive Totem", "Revive Totem Recipe", "recipes/" + BatsyHardcoreConfiguration.REVIVE_TOTEM, parent, consumer, criterionConditionsMap, true);
     }
 
     private void createReviveAltarAdvancement(Consumer<Advancement> consumer, Advancement parent) {

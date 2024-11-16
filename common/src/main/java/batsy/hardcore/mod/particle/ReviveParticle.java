@@ -8,8 +8,8 @@ import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
 
-public class AdvancedReviveParticle extends SpriteBillboardParticle {
-    public AdvancedReviveParticle(ClientWorld clientWorld, double x, double y, double z, SpriteProvider spriteProvider, double dx, double dy, double dz) {
+public class ReviveParticle extends SpriteBillboardParticle {
+    public ReviveParticle(ClientWorld clientWorld, double x, double y, double z, SpriteProvider spriteProvider, double dx, double dy, double dz) {
         super(clientWorld, x, y, z, dx, dy, dz);
 
         velocityMultiplier = 0.5f;
@@ -39,7 +39,7 @@ public class AdvancedReviveParticle extends SpriteBillboardParticle {
 
         @Override
         public Particle createParticle(DefaultParticleType defaultParticleType, ClientWorld clientWorld, double x, double y, double z, double dx, double dy, double dz) {
-            return new BasicReviveParticle(clientWorld, x, y, z, spriteProvider, dx, dy, dz);
+            return new ReviveParticle(clientWorld, x, y, z, spriteProvider, dx, dy, dz);
         }
     }
 }

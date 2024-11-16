@@ -15,10 +15,13 @@ public final class BatsyHardcoreBeforePlayerBlockBreakUtil {
     }
 
     private static boolean handleNonOwnerBreakingReviveAltar(@NotNull ServerPlayerEntity serverPlayerEntity, String playerUuid, String altarOwnerUuid) {
-        if (serverPlayerEntity.isCreativeLevelTwoOp()) {
-            serverPlayerEntity.sendMessage(Text.literal("Not yet implemented."));
-        }
         log(playerUuid, altarOwnerUuid);
+
+        if (serverPlayerEntity.isCreative()) {
+            BatsyHardcoreMod.LOGGER.info(" and did so because they're in creative mode");
+            return true;
+        }
+
         sendMessage(serverPlayerEntity);
         return false;
     }

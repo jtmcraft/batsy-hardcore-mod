@@ -140,7 +140,7 @@ public class ReviveAltarScreenHandler extends ScreenHandler {
     }
 
     @Override
-    public boolean canUse(PlayerEntity playerEntity) {
-        return !isLoaded() && inventory.canPlayerUse(playerEntity);
+    public boolean canUse(@NotNull PlayerEntity playerEntity) {
+        return !playerEntity.isSpectator() && !isLoaded() && inventory.canPlayerUse(playerEntity);
     }
 }

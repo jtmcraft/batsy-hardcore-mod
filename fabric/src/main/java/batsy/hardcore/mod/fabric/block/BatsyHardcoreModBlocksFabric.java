@@ -3,7 +3,7 @@ package batsy.hardcore.mod.fabric.block;
 import batsy.hardcore.mod.BatsyHardcoreConfiguration;
 import batsy.hardcore.mod.BatsyHardcoreMod;
 import batsy.hardcore.mod.fabric.block.custom.ReviveAltarBlockFabric;
-import batsy.hardcore.mod.util.BatsyHardcoreUtil;
+import batsy.hardcore.mod.util.BatsyHardcoreIdentifierProvider;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -22,8 +22,8 @@ public class BatsyHardcoreModBlocksFabric {
                             .mapColor(MapColor.BLACK)
                             .instrument(Instrument.BASEDRUM)
                             .requiresTool()
-                            .hardness(50.0f)
-                            .resistance(1200.0f)
+                            .hardness(25f)
+                            .resistance(1200f)
                             .luminance(ReviveAltarBlockFabric::getLightLevel)
                             .pistonBehavior(PistonBehavior.IGNORE)
             )
@@ -31,7 +31,7 @@ public class BatsyHardcoreModBlocksFabric {
 
     private static Block registerBlock(String name, Block block) {
         registerBlockItem(name, block);
-        return Registry.register(Registries.BLOCK, BatsyHardcoreUtil.id(name), block);
+        return Registry.register(Registries.BLOCK, BatsyHardcoreIdentifierProvider.create(name), block);
     }
 
     private static void registerBlockItem(String name, Block block) {

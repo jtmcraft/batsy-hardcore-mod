@@ -2,9 +2,7 @@
   "batsy_hardcore.creative_tab": "Batsy HC",
   "block.batsy_hardcore.revive_altar": "Revive Altar",
   "itemgroup.batsy_hardcore_group": "Batsy Hardcore",
-  "item.batsy_hardcore.revive_totem_basic": "Basic Revive Totem",
-  "item.batsy_hardcore.revive_totem_advanced": "Advanced Revive Totem",
+  "item.batsy_hardcore.revive_totem": "Revive Totem",
   "stat.batsy_hardcore.batsy_hardcore_time": "Time in Batsy Hardcore",
-  "sounds.batsy_hardcore.revive_advanced_complete": "Advanced Hardcore Revival Altar Ready",
-  "sounds.batsy_hardcore.revive_basic_complete": "Basic Hardcore Revival Altar Ready"
+  "sounds.batsy_hardcore.revive_player": "Player revived"
 }

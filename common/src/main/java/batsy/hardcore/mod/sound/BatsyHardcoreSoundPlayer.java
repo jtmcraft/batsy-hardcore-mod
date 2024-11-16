@@ -10,6 +10,6 @@ public final class BatsyHardcoreSoundPlayer {
     private BatsyHardcoreSoundPlayer() {}
 
     public static void playBlockSound(@NotNull World world, BlockPos blockPos, SoundEvent soundEvent) {
-        world.playSound(null, blockPos, soundEvent, SoundCategory.BLOCKS, 1f, 1f);
+        world.playSound(null, blockPos, soundEvent, SoundCategory.BLOCKS, 0.5f, 1f);
     }
 }

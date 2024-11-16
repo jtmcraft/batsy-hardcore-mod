@@ -71,40 +71,28 @@ public class ReviveAltarBlockFabric extends BlockWithEntity implements BlockEnti
                         tickingBlockEntity.tick(tickingWorld, tickingBlockState, tickingBlockEntity));
     }
 
-    public static boolean canPlaceReviveAnchor(@NotNull World level) {
-        return level.getDimension().bedWorks() || level.getDimension().respawnAnchorWorks();
-    }
-
     @Override
     public void onPlaced(@NotNull World world, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity placer, ItemStack itemStack) {
-        if (world.isClient || placer == null) {
+        if (world.isClient || !(placer instanceof ServerPlayerEntity serverPlayerEntity)) {
             return;
         }
 
-        if (!(placer instanceof ServerPlayerEntity serverPlayerEntity)) {
-            return;
-        }
+        if (world.getBlockEntity(blockPos) instanceof ReviveAltarBlockEntityFabric reviveAltarBlockEntityFabric) {
+            if (BatsyHardcorePlayerTagsUtil.isBatsyHardcore(serverPlayerEntity)) {
+                serverPlayerEntity.sendMessage(Text.literal("This altar supersedes any other altars you've placed."));
+            }
 
-        if (!(blockState.getBlock() instanceof ReviveAltarBlockFabric)) {
-            return;
+            placeReviveAltar(serverPlayerEntity, reviveAltarBlockEntityFabric);
         }
+    }
 
-        if (!ReviveAltarBlockFabric.canPlaceReviveAnchor(world)) {
-            serverPlayerEntity.sendMessage(Text.literal("You cannot set your spawn in this world."));
-            return;
-        }
-
-        if (!(world.getBlockEntity(blockPos) instanceof ReviveAltarBlockEntityFabric reviveAltarBlockEntityFabric)) {
-            serverPlayerEntity.sendMessage(Text.literal("Something has gone wrong. This is not a revive altar."));
-            return;
-        }
-
+    private void placeReviveAltar(ServerPlayerEntity serverPlayerEntity, ReviveAltarBlockEntityFabric reviveAltarBlockEntityFabric) {
         startBatsyHardcoreModeForPlayer(serverPlayerEntity, reviveAltarBlockEntityFabric);
         serverPlayerEntity.sendMessage(Text.literal("You entered Batsy Hardcore mode and set your spawn here."));
     }
 
     @Override
-    public ActionResult onUse(BlockState blockState, @NotNull World world, BlockPos blockPos, PlayerEntity playerEntity, Hand hand, BlockHitResult blockHitResult) {
+    public ActionResult onUse(BlockState blockState, @NotNull World world, BlockPos blockPos, @NotNull PlayerEntity playerEntity, Hand hand, BlockHitResult blockHitResult) {
         if (!world.isClient) {
             if (world.getBlockEntity(blockPos) instanceof ReviveAltarBlockEntityFabric reviveAltarBlockEntityFabric) {
                 playerEntity.openHandledScreen(reviveAltarBlockEntityFabric);
@@ -120,20 +108,9 @@ public class ReviveAltarBlockFabric extends BlockWithEntity implements BlockEnti
                 BatsyHardcoreConfiguration.reviveAltarUnloadedLightLevel;
     }
 
-    @Override
-    public boolean hasComparatorOutput(BlockState state) {
-        return true;
-    }
-
-    @Override
-    public int getComparatorOutput(@NotNull BlockState state, @NotNull World world, BlockPos pos) {
-        return state.get(LOADED) ?
-                BatsyHardcoreConfiguration.reviveAltarLoadedComparator :
-                BatsyHardcoreConfiguration.reviveAltarUnloadedComparator;
-    }
-
-    private void startBatsyHardcoreModeForPlayer(@NotNull ServerPlayerEntity player, @NotNull ReviveAltarBlockEntityFabric blockEntity) {
-        blockEntity.setOwnerUuid(player.getUuidAsString());
-        BatsyHardcorePlayerTagsUtil.addAll(player);
+    private void startBatsyHardcoreModeForPlayer(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull ReviveAltarBlockEntityFabric blockEntity) {
+        blockEntity.setOwnerUuid(serverPlayerEntity.getUuidAsString());
+        BatsyHardcorePlayerTagsUtil.removeAll(serverPlayerEntity);
+        BatsyHardcorePlayerTagsUtil.addAll(serverPlayerEntity);
     }
 }

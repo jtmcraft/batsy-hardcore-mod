@@ -22,7 +22,7 @@
       "batsy.hardcore.mod.fabric.client.BatsyHardcoreModFabricClient"
     ],
     "fabric-datagen": [
-      "batsy.hardcore.mod.fabric.BatsyHardcoreModDataGeneratorFabric"
+      "batsy.hardcore.mod.fabric.datagen.BatsyHardcoreModDataGeneratorFabric"
     ]
   },
   "mixins": [

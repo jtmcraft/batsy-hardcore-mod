@@ -11,8 +11,6 @@ import batsy.hardcore.mod.fabric.screen.BatsyHardcoreScreenHandlersFabric;
 import batsy.hardcore.mod.fabric.sound.BatsyHardcoreSoundsFabric;
 import batsy.hardcore.mod.stat.BatsyHardcoreModPlayerStats;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.api.FabricLoader;
-import org.jetbrains.annotations.NotNull;
 
 public final class BatsyHardcoreModFabric implements ModInitializer {
     @Override
@@ -27,12 +25,5 @@ public final class BatsyHardcoreModFabric implements ModInitializer {
         BatsyHardcoreModEventHandlingFabric.registerEvents();
         BatsyHardcoreSoundsFabric.registerSounds();
         BatsyHardcoreParticlesFabric.registerParticles();
-    }
-
-    public static @NotNull String getReviveAltarDataDirectory() {
-        return FabricLoader.getInstance()
-                .getConfigDir()
-                .resolve("batsy_hardcore_mod")
-                .toString();
     }
 }

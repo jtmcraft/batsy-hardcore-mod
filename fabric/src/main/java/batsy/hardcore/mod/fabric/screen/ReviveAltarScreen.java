@@ -1,6 +1,6 @@
 package batsy.hardcore.mod.fabric.screen;
 
-import batsy.hardcore.mod.util.BatsyHardcoreUtil;
+import batsy.hardcore.mod.util.BatsyHardcoreIdentifierProvider;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -18,8 +18,8 @@ public class ReviveAltarScreen extends HandledScreen<ReviveAltarScreenHandler> {
 
     public ReviveAltarScreen(ReviveAltarScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
-        backgroundTexture = BatsyHardcoreUtil.id("textures/gui/revive_altar_gui.png");
-        loadedTexture = BatsyHardcoreUtil.id("textures/item/revive_totem_advanced.png");
+        backgroundTexture = BatsyHardcoreIdentifierProvider.create("textures/gui/revive_altar_gui.png");
+        loadedTexture = BatsyHardcoreIdentifierProvider.create("textures/item/revive_totem_advanced.png");
     }
 
     @Override

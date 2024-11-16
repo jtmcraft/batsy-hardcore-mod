@@ -9,6 +9,5 @@ public final class BatsyHardcoreMod {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static void init() {
-        // Write common init code here.
     }
 }

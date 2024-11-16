@@ -20,8 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 @Environment(EnvType.CLIENT)
 public class ReviveAltarBlockEntityRendererFabric implements BlockEntityRenderer<ReviveAltarBlockEntityFabric> {
-    private static final ItemStack basicLoadedItem = new ItemStack(BatsyHardcoreModItemsFabric.REVIVE_TOTEM_BASIC);
-    private static final ItemStack advancedLoadedItem = new ItemStack(BatsyHardcoreModItemsFabric.REVIVE_TOTEM_ADVANCED);
+    private static final ItemStack loadedItem = new ItemStack(BatsyHardcoreModItemsFabric.REVIVE_TOTEM);
 
     public ReviveAltarBlockEntityRendererFabric(BlockEntityRendererFactory.Context context) {}
 
@@ -58,10 +57,10 @@ public class ReviveAltarBlockEntityRendererFabric implements BlockEntityRenderer
     private static ItemStack getItemToRender(@NotNull ReviveAltarBlockEntityFabric reviveAltarBlockEntityFabric) {
         int loadedValue = reviveAltarBlockEntityFabric.getLoaded();
 
-        return switch (loadedValue) {
-            case ReviveAltarBlockEntityConstants.Properties.LOADED_BASIC_VALUE -> basicLoadedItem;
-            case ReviveAltarBlockEntityConstants.Properties.LOADED_ADVANCED_VALUE -> advancedLoadedItem;
-            default -> ItemStack.EMPTY;
-        };
+        if (loadedValue == ReviveAltarBlockEntityConstants.Properties.LOADED_VALUE) {
+            return loadedItem;
+        }
+
+        return ItemStack.EMPTY;
     }
 }
